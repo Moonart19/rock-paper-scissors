@@ -13,7 +13,6 @@ function getComputerChoice() {
 
 }
 
-let count = 0;
 let humanScore = 0;
 let computerScore = 0;
 
@@ -41,7 +40,7 @@ function playGame() {
 
 function playRound(humanChoice, computerChoice) {
   
-  if(count >= MAX) return;
+  if(humanScore > MAX || computerScore > MAX) return;
   
     if(humanChoice === computerChoice){
         result.textContent = "It's tie";
@@ -58,9 +57,8 @@ function playRound(humanChoice, computerChoice) {
       }
 
       scores.textContent = `You Scored: ${humanScore}, computer Scored: ${computerScore}`;
-      count++;
       
-      if(count === MAX) {
+      if(humanScore === MAX || computerScore === MAX) {
         if(humanScore === computerScore) {
           result.textContent = "It's TIE";
           scores.textContent = `You scored: ${humanScore}, Computer scored: ${computerScore}`;
@@ -97,7 +95,7 @@ function playRound(humanChoice, computerChoice) {
 
 
       restart.addEventListener('click', () => {
-        humanScore = 0, computerScore = 0, count = 0;
+        humanScore = 0, computerScore = 0;
         result.textContent = "Let's play Again";
         scores.textContent = `You Scored: ${humanScore}, computer Scored: ${computerScore}`;
 
