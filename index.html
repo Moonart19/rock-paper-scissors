@@ -3,13 +3,67 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles.css">
   <title>Rock Paper Scissors</title>
 </head>
 <body>
-  <h1>Rock Paper Scissors Game</h1>
-  <h3>Check your browser console</h3>
+  <header>
+    <h1>Rock-Paper-Scissors</h1>
+    <h2 style="text-align: center; margin: 20px 0;">Select the below Choice</h2>
+  </header>
+  <main>
+    <ul id="choices">
+      <li><button id="rock" class="choice-button">ROCK</button></li>
+      <li><button id="paper" class="choice-button">PAPER</button></li>
+      <li><button id="scissors" class="choice-button">SCISSORS</button></li>
+    </ul>
+    <div class="container">
+    </div>
+  </main>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
 <script>
+  const choices = document.querySelector("#choices");
+  const rock = document.querySelector("#rock");
+  const paper = document.querySelector("#paper");
+  const scissors = document.querySelector("#scissors");
+  let humanScore = 0;
+  let computerScore = 0;
+  let totalRounds = 0;
+
+  choices.addEventListener('click', (e) => {
+    target = e.target;
+    if (totalRounds < 5) {
+      switch(target.id) {
+        case 'rock':
+        case 'paper':
+        case 'scissors':
+          playRound(target.id, getComputerChoice());
+          
+          if (totalRounds == 5) {
+            displayWinner(rounds);
+          }
+          break;
+        default:
+          alert("Click the choice properly");
+      }
+    }
+  });
+  const container = document.querySelector(".container");
+    let rounds = document.createElement("h2");
+    let roundText = document.createElement("p");
+    let hScore = document.createElement("p");
+    let cScore = document.createElement("p");
+    
+    rounds.textContent = "Enjoy the game";
+    roundText.textContent = "Let's Goo";
+    hScore.textContent = "Your Score: 0";
+    cScore.textContent = "Computer Score: 0";
+    
+    container.appendChild(rounds);
+    container.appendChild(roundText);
+    container.appendChild(hScore);
+    container.appendChild(cScore);
 
   function getComputerChoice() {
     choiceNumber = Math.floor(Math.random() * 3);
@@ -19,52 +73,69 @@
     else return "scissors";
   }
 
-  function getHumanChoice() {
-    choice = prompt("Enter your choice").toLowerCase();
-    return choice;
-  }
-
-  let humanScore = 0;
-  let computerScore = 0;
-  let totalRounds = 0
-
   function playRound(humanChoice, computerChoice) {
     if (humanChoice === computerChoice) {
-      console.log("This round is TIE");
+      roundText.textContent = "This round is TIE";
     } else if (
       humanChoice == "rock" && computerChoice == "scissors" || 
       humanChoice == "scissors"  && computerChoice == "paper" || 
       humanChoice == "paper" && computerChoice == "rock"
     ) {
-      console.log("You won this round");
-      humanScore++;
+      roundText.textContent = "You won this round";
+      ++humanScore;
+      hScore.textContent = "Your Score: " + humanScore;
+
     } else {
-      console.log("Compuer won this round");
-      computerScore++;
+      roundText.textContent = "Compuer won this round";
+      ++computerScore;
+      cScore.textContent = "Computer's Score: " + computerScore;
     }
-    totalRounds++;
-  }
-  
-  function playGame () {
-    for (let i = 0; i < 5; i++) {
-      humanChoice = getHumanChoice()
-      computerChoice = getComputerChoice()
-      playRound(humanChoice, computerChoice)
-    }
-    
-    console.log("############");
-    console.log("You played total "+totalRounds+" rounds");
-    
-    if (humanScore > computerScore) {
-      console.log("You WON the GAME!");
-    } else if (computerScore > humanScore) {
-      console.log("You LOST to computer");
-    } else {
-      console.log("It's a TIE");
-    }
-    console.log(`You Scored ${humanScore}, Computer Scored ${computerScore}`)
+    ++totalRounds;
+    rounds.textContent = "Round: " + totalRounds;
   }
 
-  playGame();
+  function displayWinner(rounds) {
+    if (humanScore > computerScore) {
+      rounds.textContent = "YOU WON THE GAME!";
+
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: {y: 0.6}
+      });
+    } else if (computerScore > humanScore) {
+      rounds.textContent = "COMPUTER WON THE GAME!";
+    } else {
+      rounds.textContent = "YOU BOTH PLAYED WELL!";
+    }
+
+    const buttons = document.querySelectorAll(".choice-button");
+    buttons.forEach( button => button.disabled = true);
+
+    if (!container.querySelector(".clear-btn")) {
+      const clearButton = document.createElement("button");
+      clearButton.textContent = "Reset";
+      clearButton.classList.add("clear-btn");
+      container.appendChild(clearButton);
+
+      clearButton.addEventListener("click", () => {
+        buttons.forEach( button => button.disabled = false);
+        setRound(clearButton);
+        clearButton.remove();
+      });
+    }
+  }
+
+  function setRound(clearButton) {
+    humanScore = 0;
+    computerScore = 0
+    totalRounds = 0;
+
+    rounds.textContent = "Enjoy the game";
+    roundText.textContent = "Let's Goo";
+    hScore.textContent = "Your Score: 0";
+    cScore.textContent = "Computer Score: 0";
+  }
+
 </script>
 </html>
